@@ -1,0 +1,62 @@
+{
+  "name": "public-financial-disclosure-evidence",
+  "version": "v1",
+  "retrieval_k": 20,
+  "rerank_n": 5,
+  "questions": [
+    {
+      "question_id": "GQ-001",
+      "query": "What were average interest-earning assets in 2024?",
+      "filters": {
+        "company_code": "PUBLIC_SAMPLE",
+        "document_type": "announcement",
+        "report_year": 2024
+      },
+      "expected_evidence": [
+        {"contains_all": ["1,396,927"], "page_number": 2}
+      ],
+      "should_refuse": false,
+      "rationale": "Verified against the Day7 public two-page acceptance sample."
+    },
+    {
+      "question_id": "GQ-002",
+      "query": "How much was the total dividend per share for 2024?",
+      "filters": {
+        "company_code": "PUBLIC_SAMPLE",
+        "document_type": "announcement",
+        "report_year": 2024
+      },
+      "expected_evidence": [
+        {"contains_all": ["6.80"], "page_number": 1}
+      ],
+      "should_refuse": false,
+      "rationale": "Verified against the Day7 public two-page acceptance sample."
+    },
+    {
+      "question_id": "GQ-003",
+      "query": "How much did non-interest income increase in 2024?",
+      "filters": {
+        "company_code": "PUBLIC_SAMPLE",
+        "document_type": "announcement",
+        "report_year": 2024
+      },
+      "expected_evidence": [
+        {"contains_all": ["26%"], "page_number": 1}
+      ],
+      "should_refuse": false,
+      "rationale": "Verified against the Day7 public two-page acceptance sample."
+    },
+    {
+      "question_id": "GQ-004",
+      "query": "What was the company's full-year revenue for 2025?",
+      "filters": {
+        "company_code": "PUBLIC_SAMPLE",
+        "document_type": "announcement",
+        "report_year": 2025
+      },
+      "expected_evidence": [],
+      "should_refuse": true,
+      "rationale": "The bounded sample covers 2024 and must not support a 2025 full-year claim."
+    }
+  ]
+}

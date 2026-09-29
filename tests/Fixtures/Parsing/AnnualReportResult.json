@@ -1,0 +1,25 @@
+{
+  "document_id": 1,
+  "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "parser_name": "fixture",
+  "parser_version": "1",
+  "page_count": 2,
+  "pages": [
+    {
+      "page_number": 1,
+      "blocks": [
+        {"block_index": 0, "block_type": "heading", "content": "演示银行 2025 年年度报告", "heading_level": 1},
+        {"block_index": 1, "block_type": "text", "content": "本报告仅用于解析结构测试。"}
+      ]
+    },
+    {
+      "page_number": 2,
+      "blocks": [
+        {"block_index": 0, "block_type": "heading", "content": "主要财务数据", "heading_level": 2},
+        {"block_index": 1, "block_type": "table", "content": "| 项目 | 2025 年 | 2024 年 |\n| --- | ---: | ---: |\n| 营业收入（演示） | 120 | 100 |", "section_path": ["演示银行 2025 年年度报告", "主要财务数据"], "table_format": "markdown"},
+        {"block_index": 2, "block_type": "image", "content": "演示图表", "section_path": ["演示银行 2025 年年度报告", "主要财务数据"], "asset_path": "images/chart-1.png"}
+      ]
+    }
+  ],
+  "markdown": "# 演示银行 2025 年年度报告\n\n本报告仅用于解析结构测试。\n\n## 主要财务数据\n\n| 项目 | 2025 年 | 2024 年 |\n| --- | ---: | ---: |\n| 营业收入（演示） | 120 | 100 |\n\n![演示图表](images/chart-1.png)"
+}

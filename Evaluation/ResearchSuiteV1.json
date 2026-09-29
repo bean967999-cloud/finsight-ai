@@ -1,0 +1,155 @@
+{
+  "name": "financial-research-baseline",
+  "version": "v1",
+  "retrieval_cases": [
+    {
+      "case_id": "D16-R-01",
+      "golden_question_id": "GQ-001",
+      "source": "external_document_required",
+      "source_ref": "Evaluation/GoldenQuestionsV1.json",
+      "rationale": "2024 interest-earning assets; the Day8 reference PDF is required for a real retrieval score."
+    },
+    {
+      "case_id": "D16-R-02",
+      "golden_question_id": "GQ-002",
+      "source": "external_document_required",
+      "source_ref": "Evaluation/GoldenQuestionsV1.json",
+      "rationale": "2024 dividend per share; the source page must be matched, not only the numeric string."
+    },
+    {
+      "case_id": "D16-R-03",
+      "golden_question_id": "GQ-003",
+      "source": "external_document_required",
+      "source_ref": "Evaluation/GoldenQuestionsV1.json",
+      "rationale": "Non-interest income change; verifies that the correct percentage is supported by source text."
+    },
+    {
+      "case_id": "D16-R-04",
+      "golden_question_id": "GQ-004",
+      "source": "external_document_required",
+      "source_ref": "Evaluation/GoldenQuestionsV1.json",
+      "rationale": "2025 question exceeds the bounded 2024 sample and should not receive a fabricated citation."
+    }
+  ],
+  "tool_cases": [
+    {
+      "case_id": "D16-T-01",
+      "query": "查找2024年年报原文页码",
+      "expected_intent": "document_research",
+      "expected_tools": ["document_search"],
+      "source": "synthetic_fixture",
+      "rationale": "Original wording and page number require document evidence."
+    },
+    {
+      "case_id": "D16-T-02",
+      "query": "比较2023年和2024年净利润同比",
+      "expected_intent": "structured_query",
+      "expected_tools": ["structured_query"],
+      "source": "synthetic_fixture",
+      "rationale": "A period comparison of a financial statement metric belongs to structured data."
+    },
+    {
+      "case_id": "D16-T-03",
+      "query": "计算给定价格序列的组合波动率",
+      "prices": [100, 101, 99, 102],
+      "expected_intent": "risk_analysis",
+      "expected_tools": ["risk_calculation"],
+      "source": "synthetic_fixture",
+      "rationale": "Volatility is calculated deterministically from supplied positive prices."
+    },
+    {
+      "case_id": "D16-T-04",
+      "query": "计算组合VaR但未提供价格",
+      "expected_intent": "risk_analysis",
+      "expected_tools": ["risk_calculation"],
+      "expects_limitation": true,
+      "source": "synthetic_fixture",
+      "rationale": "A risk request without prices must expose its missing-input limitation."
+    },
+    {
+      "case_id": "D16-T-05",
+      "query": "用年报原文核对营业收入",
+      "expected_intent": "mixed_research",
+      "expected_tools": ["document_search", "structured_query"],
+      "source": "synthetic_fixture",
+      "rationale": "The question needs both reported numbers and the corresponding disclosure."
+    },
+    {
+      "case_id": "D16-T-06",
+      "query": "用财报原文解释组合回撤与净利润变化",
+      "prices": [100, 96, 99, 92],
+      "expected_intent": "mixed_research",
+      "expected_tools": ["document_search", "structured_query", "risk_calculation"],
+      "source": "synthetic_fixture",
+      "rationale": "Document, financial table, and deterministic risk calculation are all needed."
+    },
+    {
+      "case_id": "D16-T-07",
+      "query": "推荐附近餐厅",
+      "expected_intent": "unsupported",
+      "expected_tools": [],
+      "expects_limitation": true,
+      "source": "synthetic_fixture",
+      "rationale": "An out-of-scope request should have no financial tool plan."
+    }
+  ],
+  "numeric_cases": [
+    {
+      "case_id": "D16-N-01",
+      "prices": [100, 100, 90],
+      "confidence": 0.95,
+      "trading_days": 252,
+      "source": "synthetic_fixture",
+      "rationale": "Flat then down: separates quantile loss from tail loss.",
+      "expected_metrics": [
+        {"metric": "cumulative_return", "expected": -0.1, "absolute_tolerance": 1e-12, "calculation_note": "90/100 - 1."},
+        {"metric": "max_drawdown", "expected": -0.1, "absolute_tolerance": 1e-12, "calculation_note": "Last price is 10% below the running peak of 100."},
+        {"metric": "historical_var", "expected": 0.095, "absolute_tolerance": 1e-12, "calculation_note": "Linear 95th percentile of losses [0, 0.1]."},
+        {"metric": "historical_cvar", "expected": 0.1, "absolute_tolerance": 1e-12, "calculation_note": "Only the 0.1 loss is at or above VaR."}
+      ]
+    },
+    {
+      "case_id": "D16-N-02",
+      "prices": [100, 90, 81],
+      "confidence": 0.95,
+      "trading_days": 252,
+      "source": "synthetic_fixture",
+      "rationale": "Two equal negative returns distinguish cumulative loss from one-period loss.",
+      "expected_metrics": [
+        {"metric": "cumulative_return", "expected": -0.19, "absolute_tolerance": 1e-12, "calculation_note": "81/100 - 1; not the sum of two 10% losses."},
+        {"metric": "max_drawdown", "expected": -0.19, "absolute_tolerance": 1e-12, "calculation_note": "Final price is 19% below the starting peak."},
+        {"metric": "historical_var", "expected": 0.1, "absolute_tolerance": 1e-12, "calculation_note": "Both one-period losses are 0.1."},
+        {"metric": "historical_cvar", "expected": 0.1, "absolute_tolerance": 1e-12, "calculation_note": "The tail consists only of 0.1 losses."},
+        {"metric": "annualized_volatility", "expected": 0.0, "absolute_tolerance": 1e-12, "calculation_note": "Equal one-period returns have zero sample standard deviation."}
+      ]
+    },
+    {
+      "case_id": "D16-N-03",
+      "prices": [100, 110, 110],
+      "confidence": 0.95,
+      "trading_days": 252,
+      "source": "synthetic_fixture",
+      "rationale": "No negative return checks the nonnegative loss convention.",
+      "expected_metrics": [
+        {"metric": "cumulative_return", "expected": 0.1, "absolute_tolerance": 1e-12, "calculation_note": "110/100 - 1."},
+        {"metric": "max_drawdown", "expected": 0.0, "absolute_tolerance": 1e-12, "calculation_note": "Prices never fall below their running peak."},
+        {"metric": "historical_var", "expected": 0.0, "absolute_tolerance": 1e-12, "calculation_note": "The negative loss quantile is reported as zero loss."},
+        {"metric": "historical_cvar", "expected": 0.0, "absolute_tolerance": 1e-12, "calculation_note": "Only the zero-loss observation lies above the raw quantile."}
+      ]
+    },
+    {
+      "case_id": "D16-N-04",
+      "prices": [100, 90, 99],
+      "confidence": 0.95,
+      "trading_days": 252,
+      "source": "synthetic_fixture",
+      "rationale": "A decline followed by recovery distinguishes maximum drawdown from final return.",
+      "expected_metrics": [
+        {"metric": "cumulative_return", "expected": -0.01, "absolute_tolerance": 1e-12, "calculation_note": "99/100 - 1."},
+        {"metric": "max_drawdown", "expected": -0.1, "absolute_tolerance": 1e-12, "calculation_note": "The trough is 90 versus the earlier peak of 100."},
+        {"metric": "historical_var", "expected": 0.09, "absolute_tolerance": 1e-12, "calculation_note": "Linear 95th percentile of losses [-0.1, 0.1]."},
+        {"metric": "historical_cvar", "expected": 0.1, "absolute_tolerance": 1e-12, "calculation_note": "The upper-tail loss is 0.1."}
+      ]
+    }
+  ]
+}
