@@ -67,3 +67,11 @@
 # Historical machine-bound acceptance launchers: retain locally, do not publish.
 /src/finsight/workers/day18_api.py
 /src/finsight/workers/prepare_day18.py
+
+# Historical plans and learning notes stay on this computer, not in the public tree.
+/docs/00_MASTER_PLAN.md
+/docs/20_DAY_PLAN.md
+/docs/ARCHITECTURE.md
+/docs/DAY17_MCP_CONTRACT.md
+/docs/DAY18_WEB_CONTRACT.md
+/docs/adr/
